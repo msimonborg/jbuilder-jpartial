@@ -26,7 +26,7 @@ class Jbuilder
       Jbuilder.class_eval do
         if method_defined?(name) || private_method_defined?(name)
           raise DangerousMethodName, "The method `##{name}` is already defined by Jbuilder. "\
-            'Please choose another name to define you partial'
+            'Please choose another name to define your partial'
         else
           define_method(name, &block)
         end
