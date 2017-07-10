@@ -22,8 +22,7 @@ class Jbuilder
   module Jpartial
     DangerousMethodName = Class.new(ArgumentError)
 
-    def self.jpartial(*args, &block)
-      name = args.first
+    def self.jpartial(name, &block)
       Jbuilder.class_eval do
         if method_defined?(name) || private_method_defined?(name)
           raise DangerousMethodName, "The method `##{name}` is already defined by Jbuilder. "\

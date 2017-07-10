@@ -1,6 +1,6 @@
 # Jbuilder::Jpartial
 
-Simple DSL for faster partial rendering with Jbuilder.
+A lightweight library that provides a simple DSL for faster partial rendering with Jbuilder.
 
 ## Installation
 
@@ -22,7 +22,7 @@ Or install it yourself as:
 
 ## Usage
 
-#### In `app/helpers/jpartial.rb`
+#### In `config/initializers/jbuilder-jpartial.rb`
 
 ```ruby
 module Jbuilder::Jpartial
@@ -30,8 +30,8 @@ module Jbuilder::Jpartial
     json.title post.title
     json.author post.author.name
     json.content post.content
-    json.set! :comments do |comment|
-      _comment comment
+    json.set! 'comments', post.comments do |comment|
+      json._comment comment
     end
   end
   
@@ -45,8 +45,8 @@ end
 #### In `app/views/posts/index.jbuilder`
 
 ```ruby
-json.set! @posts do |post|
-  json.jpartial._post post
+json.set! 'posts', @posts do |post|
+  json._post post
 end
 ```
 
@@ -67,11 +67,61 @@ end
 }
 ```
 #### Why?
-When traditional partials are used with `Jbuilder`, with each partial in a different file using standard Rails conventions, render times and memory usage can skyrocket quickly with the number of records.
+When traditional partials are used with `Jbuilder`, with each partial in a different file using standard Rails conventions, render times and memory usage can skyrocket quickly with the number of records, i.e. the number of partials rendered.
 
-Using a simple DSL, `Jbuilder::Jpartial` lets you define all partials in one helper file and call them wherever you need them: from within other partial definitions or anywhere you use `Jbuilder`.
+Using a simple DSL, `Jbuilder::Jpartial` lets you define all partials in one initializer file and call them wherever you need them: from within other partial definitions or anywhere you use `Jbuilder` in your views.
 
-The result is faster rendering and lower memory usage. In the above example, if we had used traditional partials (defined in `app/views/posts/_post.jbuilder` and `app/views/posts/_comment.jbuilder`) those templates would have to be rendered once for each `post` and/or `comment`. Using `Jbuilder::Jpartial`, only one file (`app/views/posts/index.jbuilder`) is rendered. All of the partial rendering is taken care of in the abstract.
+The result is faster rendering and lower memory usage, while still being able to leverage the advantages of Jbuilder. In the above example, if we had used traditional partials (defined in `app/views/posts/_post.jbuilder` and `app/views/posts/_comment.jbuilder`) those templates would have to be rendered once for each `post` and/or `comment`. If you have 50 posts, each with 50 comments, that's 2,500 templates rendered! Using `Jbuilder::Jpartial`, only one file (`app/views/posts/index.jbuilder`) is rendered. All of the partial rendering is taken care of in the abstract.
+
+#### How?
+Each `jpartial` block in your initializer file defines a Jbuilder method named after whatever symbol you pass as an argument. The objects you will pass to that method are yielded to the block. Inside the block you can use plain old Jbuilder syntax.
+
+e.g.
+
+```ruby
+module Jbuilder::Jpartial
+  jpartial :_post do |post|
+    json.title post.title
+  end
+end
+```
+
+Now in your `.jbuilder` templates you can call `json._post @post`.
+
+You can specify multiple arguments and even use keyword arguments if you need to pass more than one local variable to the partial. You can also call partial methods from within other partial methods.
+
+e.g.
+
+```ruby
+module Jbuilder::Jpartial
+  jpartial :_post do |post, author:|
+    json.title post.title
+    json._author author
+  end
+  
+  jpartial :_author do |author|
+    json.name author.name
+  end
+end
+```
+
+Now you can call `json._post @post, author: @author`
+
+Route helpers that are available within the views can also be used in the configuration file.
+
+e.g.
+
+```ruby
+module Jbuilder::Jpartial
+  jpartial :_post do |post|
+    json.href post_url(post)
+    json.title post.title
+  end
+end
+```
+
+However unlikely, if you try to name a partial with the same name as a method already defined by Jbuilder it will throw an error at start up. Just pick a different name, like `#set_partial!` instead of `#set!`.
+
 
 ## Development
 
