@@ -1,7 +1,5 @@
 require 'jbuilder'
 
-require 'jbuilder/jpartial/version'
-
 # Top level Jbuilder class
 class Jbuilder
   def json
@@ -25,8 +23,8 @@ class Jbuilder
     def self.jpartial(name, &block)
       Jbuilder.class_eval do
         if method_defined?(name) || private_method_defined?(name)
-          raise DangerousMethodName, "The method `##{name}` is already defined by Jbuilder. "\
-            'Please choose another name to define your partial'
+          raise DangerousMethodName, "The method `##{name}` is already defined"\
+          ' by Jbuilder. Please choose another name to define your partial'
         else
           define_method(name, &block)
         end
