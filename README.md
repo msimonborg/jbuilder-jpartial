@@ -71,7 +71,7 @@ When traditional partials are used with `Jbuilder`, with each partial in a diffe
 
 Using a simple DSL, `Jbuilder::Jpartial` lets you define all partials in one initializer file and call them wherever you need them: from within other partial definitions or anywhere you use `Jbuilder` in your views.
 
-The result is faster rendering and lower memory usage, while still being able to leverage the advantages of Jbuilder. In the above example, if we had used traditional partials (defined in `app/views/posts/_post.jbuilder` and `app/views/posts/_comment.jbuilder`) those templates would have to be rendered once for each `post` and/or `comment`. If you have 50 posts, each with 50 comments, that's 2,500 templates rendered! Using `Jbuilder::Jpartial`, only one file (`app/views/posts/index.jbuilder`) is rendered. All of the partial rendering is taken care of in the abstract.
+The result is faster rendering and lower memory usage, while still being able to leverage the advantages of Jbuilder. In the above example, if we had used traditional partials (defined in `app/views/posts/_post.jbuilder` and `app/views/comments/_comment.jbuilder`) those templates would have to be rendered once for each `post` and/or `comment`. If you have 50 posts, each with 50 comments, that's 2,500 templates rendered! Using `Jbuilder::Jpartial`, only one file (`app/views/posts/index.jbuilder`) is rendered. All of the partial rendering is taken care of in the abstract.
 
 #### How?
 Each `jpartial` block in your initializer file defines a Jbuilder method named after whatever symbol you pass as an argument. The objects you will pass to that method are yielded to the block. Inside the block you can use plain old Jbuilder syntax.
