@@ -1,25 +1,37 @@
+require 'jbuilder'
+
 require 'jbuilder/jpartial/version'
 
 # Top level Jbuilder class
 class Jbuilder
-  include Jpartial
+  def json
+    self
+  end
+
+  alias_method :old_method_missing, :method_missing
+
+  def method_missing(method_name, *args, &block)
+    if method_name.to_s =~ /(.*)_(url|path)/ && defined? @context
+      @context.send(method_name, *args, &block)
+    else
+      old_method_missing(method_name, *args, &block)
+    end
+  end
 
   # Jpartial module
   module Jpartial
-    Partials = Class.new
+    DangerousMethodName = Class.new(ArgumentError)
 
-    def jpartial(*args, &block)
-      if args && block_given?
-        define_partial(*args, &block)
-      else
-        Partials.new
-      end
-    end
-
-    def define_partial(*args, &block)
+    def self.jpartial(*args, &block)
       name = args.first
-
-      Partials.define_method(name, &block)
+      Jbuilder.class_eval do
+        if method_defined?(name) || private_method_defined?(name)
+          raise DangerousMethodName, "The method `##{name}` is already defined by Jbuilder. "\
+            'Please choose another name to define you partial'
+        else
+          define_method(name, &block)
+        end
+      end
     end
   end
 end
