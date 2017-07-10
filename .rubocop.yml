@@ -1,0 +1,5 @@
+Style/Alias:
+  Enabled: false
+
+Style/MethodMissing:
+  Enabled: false
