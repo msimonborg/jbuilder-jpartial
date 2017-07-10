@@ -10,7 +10,7 @@ class Jbuilder
 
     def jpartial(*args, &block)
       if args && block_given?
-        define_partial(args, &block)
+        define_partial(*args, &block)
       else
         Partials.new
       end
