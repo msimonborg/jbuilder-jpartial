@@ -25,7 +25,7 @@ Or install it yourself as:
 #### In `config/initializers/jbuilder-jpartial.rb`
 
 ```ruby
-module Jbuilder::Jpartial
+Jbuilder::Jpartial.configure do
   jpartial :_post do |post|
     json.title post.title
     json.author post.author.name
@@ -79,7 +79,7 @@ Each `jpartial` block in your initializer file defines a Jbuilder method named a
 e.g.
 
 ```ruby
-module Jbuilder::Jpartial
+Jbuilder::Jpartial.configure do
   jpartial :_post do |post|
     json.title post.title
   end
@@ -93,7 +93,7 @@ You can specify multiple arguments and even use keyword arguments if you need to
 e.g.
 
 ```ruby
-module Jbuilder::Jpartial
+Jbuilder::Jpartial.configure do
   jpartial :_post do |post, author:|
     json.title post.title
     json._author author
@@ -112,7 +112,7 @@ Route helpers that are available within the views can also be used in the config
 e.g.
 
 ```ruby
-module Jbuilder::Jpartial
+Jbuilder::Jpartial.configure do
   jpartial :_post do |post|
     json.href post_url(post)
     json.title post.title
