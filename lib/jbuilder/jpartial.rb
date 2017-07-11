@@ -20,21 +20,31 @@ class Jbuilder
   module Jpartial
     DangerousMethodName = Class.new(ArgumentError)
 
+    @defined_by_user = []
+
     def self.jpartial(name, &block)
-      Jbuilder.class_eval do
-        if method_defined?(name) || private_method_defined?(name)
-          raise DangerousMethodName, "The method `##{name}` is already defined"\
+      if dangerous_method_name?(name)
+        raise DangerousMethodName, "The method `##{name}` is already defined"\
           ' by Jbuilder. Please choose another name to define your partial'
-        else
+      else
+        Jbuilder.class_eval do
           define_method(name, &block)
         end
+        @defined_by_user << name unless @defined_by_user.include?(name)
       end
+    end
+
+    def self.dangerous_method_name?(name)
+      !@defined_by_user.include?(name) &&
+        Jbuilder.method_defined?(name) ||
+        Jbuilder.private_method_defined?(name)
     end
 
     def self.configure(&block)
       module_eval(&block)
     end
 
+    # Sends all method calls to Jpartial.jpartial for definition
     class Template
       def method_missing(method_name, &block)
         Jpartial.jpartial(method_name, &block)
@@ -42,3 +52,5 @@ class Jbuilder
     end
   end
 end
+
+require 'jbuilder/jpartial/railtie' if defined?(Rails)

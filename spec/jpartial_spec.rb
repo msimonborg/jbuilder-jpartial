@@ -31,18 +31,28 @@ describe Jbuilder::Jpartial do
     expect(Jbuilder.instance_method(:_user).arity).to be 1
   end
 
-  it 'raises an error if a method by that name is already defined' do
-    jpartial_block = lambda do
+  it 'can use simplified syntax' do
+    expect { Jbuilder.instance_method(:_user) }.to raise_error NameError
+
+    jpartial = Jbuilder::Jpartial::Template.new
+    jpartial._user { |user| json.name user.name }
+
+    expect(Jbuilder.instance_method(:_user).arity).to be 1
+  end
+
+  it 'raises if a method by that name is already defined by Jbuilder' do
+    jpartial_block = lambda do |name|
       Jbuilder::Jpartial.configure do
-        jpartial(:_user) { |user| json.name user.name }
+        jpartial(name) { |user| json.name user.name }
       end
     end
 
     error = Jbuilder::Jpartial::DangerousMethodName
 
-    expect { jpartial_block.call }.not_to raise_error
+    expect { jpartial_block.call(:_user) }.not_to raise_error
+    expect { jpartial_block.call(:_user) }.not_to raise_error
 
-    expect { jpartial_block.call }.to raise_error error
+    expect { jpartial_block.call(:set!) }.to raise_error error
   end
 
   it 'formats JSON correctly' do
