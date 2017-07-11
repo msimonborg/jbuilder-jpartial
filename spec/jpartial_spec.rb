@@ -5,7 +5,7 @@ require 'json'
 require 'pry'
 
 User = Struct.new(:name, :age, :hometown, :posts)
-Post = Struct.new(:content, :comments)
+Post = Struct.new(:id, :content, :comments)
 Comment = Struct.new(:body)
 
 describe Jbuilder::Jpartial do
@@ -16,9 +16,9 @@ describe Jbuilder::Jpartial do
   end
 
   let! :user do
-    User.new('name', 'age', 'hometown', (1..10).map do |post_num|
-      Post.new("Post #{post_num} content", (1..10).map do |comment_num|
-        Comment.new("Post #{post_num} comment #{comment_num} body")
+    User.new('name', 'age', 'hometown', (0..9).map do |p_num|
+      Post.new(p_num, "Post #{p_num} content", (0..9).map do |c_num|
+        Comment.new("Post #{p_num} comment #{c_num} body")
       end)
     end)
   end
@@ -47,7 +47,7 @@ describe Jbuilder::Jpartial do
 
   it 'formats JSON correctly' do
     Jbuilder::Jpartial.configure do
-      jpartial(:_user) do |user|
+      jpartial :_user do |user|
         json.name user.name
         json.age user.age
         json.hometown user.hometown
@@ -56,17 +56,59 @@ describe Jbuilder::Jpartial do
 
     response = JSON.parse(Jbuilder.encode { |json| json._user user })
 
-    expect(response['name']).to eq user.name
-    expect(response['age']).to eq user.age
-    expect(response['hometown']).to eq user.hometown
+    %w[name age hometown].each do |attr|
+      expect(response[attr]).to eq user.send(attr)
+    end
   end
 
   it 'can embed partials and use keyword arguments' do
     Jbuilder::Jpartial.configure do
-      jpartial(:_user) do |user|
+      jpartial :_user do |user|
         json.name user.name
         json.age user.age
         json.hometown user.hometown
+        json.set! 'posts', user.posts do |post|
+          json._post post, author: user
+        end
+      end
+
+      jpartial :_post do |post, options = {}|
+        author = options.fetch(:author)
+        json.id post.id
+        json.content post.content
+        json.author author.name
+        json.set! 'comments', post.comments do |comment|
+          json._comment comment, post: post
+        end
+      end
+
+      jpartial :_comment do |comment, options = {}|
+        post = options.fetch(:post)
+        json.body comment.body
+        json.post_id post.id
+      end
+    end
+
+    response = JSON.parse(Jbuilder.encode { |json| json._user user })
+
+    %w[name age hometown].each do |attr|
+      expect(response[attr]).to eq user.send(attr)
+    end
+
+    posts = response['posts']
+
+    expect(posts).to be_a Array
+    expect(posts.length).to eq 10
+
+    posts.each_with_index do |post, p_index|
+      expect(post['id']).to eq p_index
+      expect(post['content']).to eq "Post #{p_index} content"
+      expect(post['comments']).to be_a Array
+      expect(post['comments'].length).to eq 10
+
+      post['comments'].each_with_index do |comment, c_index|
+        expect(comment['body']).to eq "Post #{p_index} comment #{c_index} body"
+        expect(comment['post_id']).to eq p_index
       end
     end
   end
