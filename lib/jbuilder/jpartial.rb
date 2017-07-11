@@ -34,5 +34,11 @@ class Jbuilder
     def self.configure(&block)
       module_eval(&block)
     end
+
+    class Template
+      def method_missing(method_name, &block)
+        Jpartial.jpartial(method_name, &block)
+      end
+    end
   end
 end
