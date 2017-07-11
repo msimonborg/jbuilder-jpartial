@@ -1,4 +1,5 @@
 require 'jbuilder'
+require 'jbuilder/jpartial/version'
 
 # Top level Jbuilder class
 class Jbuilder
