@@ -1,5 +1,12 @@
+AllCops:
+  TargetRubyVersion: 1.9
+
 Style/Alias:
   Enabled: false
 
 Style/MethodMissing:
   Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
