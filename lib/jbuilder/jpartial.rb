@@ -6,6 +6,22 @@ class Jbuilder
     self
   end
 
+  alias_method :old_method_missing, :method_missing
+
+  def method_missing(method_name, *args, &block)
+    if _method_is_a_route_helper?(method_name)
+      @context.send(method_name, *args, &block)
+    else
+      old_method_missing(method_name, *args, &block)
+    end
+  end
+
+  def _method_is_a_route_helper?(method_name)
+    method_name.to_s =~ /(.*)_(url|path)/ &&
+      defined? @context &&
+        context.respond_to?(method_name)
+  end
+
   # Jpartial module
   module Jpartial
     DangerousMethodName = Class.new(ArgumentError)

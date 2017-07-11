@@ -162,9 +162,10 @@ end
 
 However unlikely, if you try to name a partial with the same name as a method already defined by Jbuilder it will throw an error at start up. Just pick a different name, like `#whatever_partial` instead of `#whatever`.
 
-One method taken by this library is `Jbuilder#json`. This method returns the `self` of the receiver, which will be the instance of `Jbuilder` doing the encoding. If you have or need any fields with the key `"json"` use `Jbuilder#set!`, e.g.
+Methods taken by this library are `Jbuilder#json` and any route helpers e.g. `Jbuilder#post_url`. If you have or need any fields with keys like `"json"` or `"post_url"` use `Jbuilder#set!`, e.g.
 ```ruby
 json.set! 'json', 'some value'
+json.set! 'post_url', 'some url'
 ```
 
 
