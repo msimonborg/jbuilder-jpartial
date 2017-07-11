@@ -2,6 +2,7 @@
 
 require 'jbuilder/jpartial'
 require 'json'
+require 'ostruct'
 require 'pry'
 
 User = Struct.new(:name, :age, :hometown, :posts)
@@ -69,6 +70,38 @@ describe Jbuilder::Jpartial do
     %w[name age hometown].each do |attr|
       expect(response[attr]).to eq user.send(attr)
     end
+  end
+
+  it 'can detect and evaluate ActionView route helper methods' do
+    JbuilderTemplateDouble = Class.new(Jbuilder) do
+      def initialize(context, *args)
+        @context = context
+        super(*args)
+      end
+    end
+
+    Jbuilder::Jpartial.configure do |jpartial|
+      jpartial._post do |post|
+        json.name post.to_s
+        json.url posts_url
+      end
+    end
+
+    json = Jbuilder.new
+
+    expect(json._method_is_a_route_helper?(:posts_url)).to be false
+
+    context = OpenStruct.new(posts_url: 'www.app.com/posts')
+    json = JbuilderTemplateDouble.new(context)
+
+    expect(json._method_is_a_route_helper?(:posts_url)).to be true
+    expect(json._method_is_a_route_helper?(:users_url)).to be false
+
+    json._post :post
+    response = JSON.parse(json.target!)
+
+    expect(response['name']).to eq 'post'
+    expect(response['url']).to eq 'www.app.com/posts'
   end
 
   it 'can embed partials and use keyword arguments' do

@@ -18,9 +18,8 @@ class Jbuilder
   end
 
   def _method_is_a_route_helper?(method_name)
-    method_name.to_s =~ /(.*)_(url|path)/ &&
-      defined? @context &&
-        context.respond_to?(method_name)
+    method_name.to_s =~ /(.*)_(url|path)/ && !@context.nil? &&
+      @context.respond_to?(method_name)
   end
 
   # Jpartial module
