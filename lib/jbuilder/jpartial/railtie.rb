@@ -11,7 +11,7 @@ class Jbuilder
       def self.call(template)
         %{__already_defined = defined?(json); json||=JbuilderTemplate.new(self);
           jpartial||=Jbuilder::Jpartial::Template.new;
-          #{template.source} json.target! unless
+          #{template.source}; json.target! unless
           (__already_defined && __already_defined != "method")}
       end
     end
