@@ -74,7 +74,7 @@ When partials are used with `Jbuilder` render times and memory usage can skyrock
 
 Using a simple DSL, `Jbuilder::Jpartial` lets you define your partials in a familiar way while dramatically reducing overhead. 
 
-The result is faster rendering and lower memory usage, while still being able to leverage the advantages of Jbuilder. In the above example, if we had used standard Jbuilder partials those templates would have to be rendered once for each `post` and/or `comment`. If you have 50 posts, each with 50 comments, that's 2,550 templates rendered! Using `Jbuilder::Jpartial`, the partial files are each only called when the partial is initialized. After that, all of the partial rendering is taken care of in the abstract from the original file. In our example, we hit `json.partial! 'post'` once and `json.partial! 'comments/comment' only once for each `post`, cutting 2,550 template renders down to 51.
+The result is faster rendering and lower memory usage, while still being able to leverage the advantages of Jbuilder. In the above example, if we had used standard Jbuilder partials those templates would have to be rendered once for each `post` and/or `comment`. If you have 50 posts, each with 50 comments, that's 2,550 templates rendered! Using `Jbuilder::Jpartial`, the partial files are each only called when the partial is initialized. After that, all of the partial rendering is taken care of in the abstract from the original file. In our example, we hit `json.partial! 'post'` once and `json.partial! 'comments/comment'` only once for each `post`, cutting 2,550 template renders down to 51.
 
 Alternatively you can define all partials in one initializer file and call them wherever you need them: from within other partial definitions or anywhere you use `Jbuilder` in your views. The big advantage here is since they're initialized at start up, you don't need to call any additional view templates to render the partials. Using the same example as above:
 
@@ -123,7 +123,7 @@ Now in your `.jbuilder` templates you can call `json._post @post`.
 
 You can specify multiple arguments and even use keyword options if you need to pass more than one local variable to the partial. You can also call partial methods from within other partial methods.
 
-The rule of thumb when defining your partials in views is you need to make sure the partial is initialized by making a call to the template, outside of your render logic and/or any loops/iteration.
+The rule of thumb when defining your partials in view templates is you need to make sure the partial is initialized by making a call to the template, outside of your render logic and/or any loops/iteration.
 
 e.g.
 
@@ -162,7 +162,7 @@ end
 
 However unlikely, if you try to name a partial with the same name as a method already defined by Jbuilder it will throw an error at start up. Just pick a different name, like `#whatever_partial` instead of `#whatever`.
 
-Methods taken by this library are `Jbuilder#json` and any route helpers e.g. `Jbuilder#post_url`. If you have or need any fields with keys like `"json"` or `"post_url"` use `Jbuilder#set!`, e.g.
+Methods taken by this library are `Jbuilder#json` and any valid route helpers defined by your app e.g. `Jbuilder#post_url`. If you have or need any fields with keys like `"json"` or `"post_url"` use `Jbuilder#set!`, e.g.
 ```ruby
 json.set! 'json', 'some value'
 json.set! 'post_url', 'some url'
