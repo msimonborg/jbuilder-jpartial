@@ -24,14 +24,14 @@ describe Jbuilder::Jpartial do
   end
 
   it 'defines instance methods on the Jbuilder class' do
-    Jbuilder::Jpartial.configure do
-      jpartial(:_user) { |user| json.name user.name }
+    Jbuilder::Jpartial.configure do |jpartial|
+      jpartial._user { |user| json.name user.name }
     end
 
     expect(Jbuilder.instance_method(:_user).arity).to be 1
   end
 
-  it 'can use simplified syntax' do
+  it 'can use a non-block syntax' do
     expect { Jbuilder.instance_method(:_user) }.to raise_error NameError
 
     jpartial = Jbuilder::Jpartial::Template.new
@@ -42,8 +42,8 @@ describe Jbuilder::Jpartial do
 
   it 'raises if a method by that name is already defined by Jbuilder' do
     jpartial_block = lambda do |name|
-      Jbuilder::Jpartial.configure do
-        jpartial(name) { |user| json.name user.name }
+      Jbuilder::Jpartial.configure do |jpartial|
+        jpartial.send(name) { |user| json.name user.name }
       end
     end
 
@@ -56,8 +56,8 @@ describe Jbuilder::Jpartial do
   end
 
   it 'formats JSON correctly' do
-    Jbuilder::Jpartial.configure do
-      jpartial :_user do |user|
+    Jbuilder::Jpartial.configure do |jpartial|
+      jpartial._user do |user|
         json.name user.name
         json.age user.age
         json.hometown user.hometown
@@ -72,8 +72,8 @@ describe Jbuilder::Jpartial do
   end
 
   it 'can embed partials and use keyword arguments' do
-    Jbuilder::Jpartial.configure do
-      jpartial :_user do |user|
+    Jbuilder::Jpartial.configure do |jpartial|
+      jpartial._user do |user|
         json.name user.name
         json.age user.age
         json.hometown user.hometown
@@ -82,7 +82,7 @@ describe Jbuilder::Jpartial do
         end
       end
 
-      jpartial :_post do |post, options = {}|
+      jpartial._post do |post, options = {}|
         author = options.fetch(:author)
         json.id post.id
         json.content post.content
@@ -92,7 +92,7 @@ describe Jbuilder::Jpartial do
         end
       end
 
-      jpartial :_comment do |comment, options = {}|
+      jpartial._comment do |comment, options = {}|
         post = options.fetch(:post)
         json.body comment.body
         json.post_id post.id

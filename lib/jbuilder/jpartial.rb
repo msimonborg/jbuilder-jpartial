@@ -6,16 +6,6 @@ class Jbuilder
     self
   end
 
-  alias_method :old_method_missing, :method_missing
-
-  def method_missing(method_name, *args, &block)
-    if method_name.to_s =~ /(.*)_(url|path)/ && defined? @context
-      @context.send(method_name, *args, &block)
-    else
-      old_method_missing(method_name, *args, &block)
-    end
-  end
-
   # Jpartial module
   module Jpartial
     DangerousMethodName = Class.new(ArgumentError)
@@ -40,14 +30,22 @@ class Jbuilder
         Jbuilder.private_method_defined?(name)
     end
 
-    def self.configure(&block)
-      module_eval(&block)
+    def self.configure
+      yield Template.new
     end
 
-    # Sends all method calls to Jpartial.jpartial for definition
-    class Template
-      def method_missing(method_name, &block)
-        Jpartial.jpartial(method_name, &block)
+    # Proxy object that sends all method calls to Jpartial.jpartial
+    Template = Class.new(begin
+                           require 'active_support/proxy_object'
+                           ActiveSupport::ProxyObject
+                         rescue LoadError
+                           require 'active_support/basic_object'
+                           ActiveSupport::BasicObject
+                         end) do
+
+      def method_missing(name, *args, &block)
+        name = name.to_s == 'send' ? args.first.to_sym : name
+        Jpartial.jpartial(name, &block)
       end
     end
   end
