@@ -30,5 +30,9 @@ class Jbuilder
         end
       end
     end
+
+    def self.configure(&block)
+      module_eval(&block)
+    end
   end
 end
