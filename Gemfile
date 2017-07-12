@@ -3,8 +3,12 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in jbuilder-jpartial.gemspec
 gemspec
 
-group :development, :test do
+group :test, :development do
+  gem 'coveralls', require: false
   gem 'pry'
+  gem 'rake'
   gem 'rspec'
   gem 'rubocop'
+  gem 'simplecov', require: false
+  gem 'yardstick'
 end

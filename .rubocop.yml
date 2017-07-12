@@ -9,4 +9,11 @@ Style/MethodMissing:
 
 Metrics/BlockLength:
   Exclude:
+    - 'jbuilder-jpartial.gemspec'
     - 'spec/**/*'
+    - 'Rakefile'
+
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%i': '[]'
+    '%w': '[]'

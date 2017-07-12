@@ -58,7 +58,6 @@ class Jbuilder
                            require 'active_support/basic_object'
                            ActiveSupport::BasicObject
                          end) do
-
       def method_missing(name, *args, &block)
         name = name.to_s == 'send' ? args.first.to_sym : name
         Jpartial.jpartial(name, &block)
