@@ -1,5 +1,8 @@
 # Jbuilder::Jpartial
 
+[![Gem Version](https://badge.fury.io/rb/jbuilder-jpartial.svg)](https://badge.fury.io/rb/jbuilder-jpartial)
+[![Build Status](https://travis-ci.org/msimonborg/jbuilder-jpartial.svg?branch=master)](https://travis-ci.org/msimonborg/jbuilder-jpartial)
+
 A lightweight library that provides a simple DSL for faster partial rendering with Jbuilder.
 
 ## Installation
@@ -17,7 +20,7 @@ And then execute:
 Or install it yourself as:
 
     $ gem install jbuilder-jpartial
-    
+
     require 'jbuilder/jpartial'
 
 ## Usage
@@ -72,7 +75,7 @@ end
 #### Why?
 When partials are used with `Jbuilder` render times and memory usage can skyrocket quickly with the number of records, i.e. the number of partials rendered.
 
-Using a simple DSL, `Jbuilder::Jpartial` lets you define your partials in a familiar way while dramatically reducing overhead. 
+Using a simple DSL, `Jbuilder::Jpartial` lets you define your partials in a familiar way while dramatically reducing overhead.
 
 The result is faster rendering and lower memory usage, while still being able to leverage the advantages of Jbuilder. In the above example, if we had used standard Jbuilder partials those templates would have to be rendered once for each `post` and/or `comment`. If you have 50 posts, each with 50 comments, that's 2,550 templates rendered! Using `Jbuilder::Jpartial`, the partial files are each only called when the partial is initialized. After that, all of the partial rendering is taken care of in the abstract from the original file. In our example, we hit `json.partial! 'post'` once and `json.partial! 'comments/comment'` only once for each `post`, cutting 2,550 template renders down to 51.
 
@@ -89,7 +92,7 @@ Jbuilder::Jpartial.configure do |jpartial|
       json._comment comment
     end
   end
-  
+
   jpartial._comment do |comment|
     json.content comment.content
     json.author comment.author.name
@@ -153,7 +156,7 @@ Jbuilder::Jpartial.configure do |jpartial|
     json.title post.title
     json._author author
   end
-  
+
   jpartial._author do |author|
     json.name author.name
   end
@@ -183,4 +186,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/msimon
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
