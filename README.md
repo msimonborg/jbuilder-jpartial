@@ -170,8 +170,6 @@ end
 ```
 
 However unlikely, if you try to name a partial with the same name as a method already defined by Jbuilder it will throw an error at start up. Just pick a different name, like `#whatever_partial` instead of `#whatever`.
-```
-
 
 ## Development
 
