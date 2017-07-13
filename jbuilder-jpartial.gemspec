@@ -15,7 +15,8 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/msimonborg/jbuilder-jpartial'
   spec.license       = 'MIT'
 
-  spec.files         = %w[lib LICENSE.txt README.md CHANGELOG.md]
+  spec.files = Dir['lib/**/*', 'LICENSE.txt', 'README.md', 'CHANGELOG.md']
+
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
