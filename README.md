@@ -112,13 +112,13 @@ Notice that when using this method, we don't make any calls like `json.partial! 
 We've now cut our template renders down to only 1 from the original 2,550. The only real disadvantage is it bucks the regular Rails file structure conventions for partials. C'est la vie.
 
 #### How?
-Each method you call on `jpartial`  defines a Jbuilder method of the same name. The objects you will pass to that method are yielded to the block. Inside the block you can use plain old Jbuilder syntax.
+Each method you call on `jpartial`  defines a Jbuilder method of the same name. The objects you will pass to that method are yielded to the block. Inside the block you can use plain old Jbuilder syntax, and access any of the helper methods available to your views.
 
 e.g.
 
 ```ruby
 jpartial._post do |post|
-  json.title post.title
+  json.post_url post_url(post)
 end
 ```
 
@@ -148,8 +148,9 @@ end
 
 Now you can call `json._post @post, author: @author`
 
-Again, if you're defining all of your partials in one config file, the extra call to a partial template is not necessary.
+Again, if you're defining all of your partials in one config file (best performance), the extra call to a partial template is not necessary.
 
+#### `config/initializers/jpartial.rb`
 ```ruby
 Jbuilder::Jpartial.configure do |jpartial|
   jpartial._post do |post, author:|
@@ -164,11 +165,6 @@ end
 ```
 
 However unlikely, if you try to name a partial with the same name as a method already defined by Jbuilder it will throw an error at start up. Just pick a different name, like `#whatever_partial` instead of `#whatever`.
-
-Methods taken by this library are `Jbuilder#json` and any valid route helpers defined by your app e.g. `Jbuilder#post_url`. If you have or need any fields with keys like `"json"` or `"post_url"` use `Jbuilder#set!`, e.g.
-```ruby
-json.set! 'json', 'some value'
-json.set! 'post_url', 'some url'
 ```
 
 
