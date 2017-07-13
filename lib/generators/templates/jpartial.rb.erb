@@ -1,0 +1,19 @@
+<%= "# frozen_string_literal: true" %>
+
+<%= "Jbuilder::Jpartial.configure do |jpartial|" %>
+<%= "#   jpartial._post do |post|" %>
+<%= "#     json.post_url post_url(post)" %>
+<%= "#     json.title post.title" %>
+<%= "#     json.author_name post.author.name" %>
+<%= "#   end" %>
+<%= "end" %>
+
+<%= "# In `app/views/posts/show.jbuilder`" %>
+<%= "#   json._post @post" %>
+<%= "#" %>
+<%= "# Result:" %>
+<%= "#   {" %>
+<%= "#     \"post_url\": \"http://www.app.com/posts/12345\"," %>
+<%= "#     \"title\": \"The Number One Post\"," %>
+<%= "#     \"author\": \"M. Simon Borg\"" %>
+<%= "#   }" %>
