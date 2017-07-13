@@ -1,6 +1,7 @@
 # Jbuilder::Jpartial
 
 [![Gem Version](https://badge.fury.io/rb/jbuilder-jpartial.svg)](https://badge.fury.io/rb/jbuilder-jpartial)
+[![Code Climate](https://codeclimate.com/github/msimonborg/jbuilder-jpartial/badges/gpa.svg)](https://codeclimate.com/github/msimonborg/jbuilder-jpartial)
 [![Build Status](https://travis-ci.org/msimonborg/jbuilder-jpartial.svg?branch=master)](https://travis-ci.org/msimonborg/jbuilder-jpartial)
 
 A lightweight library that provides a simple DSL for faster partial rendering with Jbuilder.
