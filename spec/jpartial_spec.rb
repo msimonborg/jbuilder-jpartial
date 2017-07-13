@@ -29,7 +29,7 @@ describe Jbuilder::Jpartial do
       jpartial._user { |user| json.name user.name }
     end
 
-    expect(Jbuilder.instance_method(:_user).arity).to be 1
+    expect { Jbuilder.instance_method(:_user) }.not_to raise_error
   end
 
   it 'can use a non-block syntax' do
@@ -38,7 +38,7 @@ describe Jbuilder::Jpartial do
     jpartial = Jbuilder::Jpartial::Template.new
     jpartial._user { |user| json.name user.name }
 
-    expect(Jbuilder.instance_method(:_user).arity).to be 1
+    expect { Jbuilder.instance_method(:_user) }.not_to raise_error
   end
 
   it 'raises if a method by that name is already defined by Jbuilder' do
@@ -87,15 +87,8 @@ describe Jbuilder::Jpartial do
       end
     end
 
-    json = Jbuilder.new
-
-    expect(json._method_is_a_route_helper?(:posts_url)).to be false
-
     context = OpenStruct.new(posts_url: 'www.app.com/posts')
     json = JbuilderTemplateDouble.new(context)
-
-    expect(json._method_is_a_route_helper?(:posts_url)).to be true
-    expect(json._method_is_a_route_helper?(:users_url)).to be false
 
     json._post :post
     response = JSON.parse(json.target!)
