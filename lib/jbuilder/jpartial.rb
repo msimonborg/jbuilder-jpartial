@@ -55,7 +55,7 @@ class Jbuilder
     # so it can pass along context methods when they're defined.
     class JbuilderProxy
       instance_methods.each do |meth|
-        next if [:method_missing, :__send__].include?(meth)
+        next if [:method_missing, :__send__, :object_id].include?(meth)
         undef_method(meth)
       end
 

@@ -81,7 +81,12 @@ The result is faster rendering and lower memory usage, while still being able to
 
 Alternatively you can define all partials in one initializer file and call them wherever you need them: from within other partial definitions or anywhere you use `Jbuilder` in your views. The big advantage here is since they're initialized at start up, you don't need to call any additional view templates to render the partials. Using the same example as above:
 
-#### In `app/config/initializers/jpartial.rb`
+#### First generate the file
+
+    $ rails generate jpartial
+
+
+#### Then in `app/config/initializers/jpartial.rb`
 ```ruby
 Jbuilder::Jpartial.configure do |jpartial|
   jpartial._post do |post|
@@ -112,7 +117,7 @@ Notice that when using this method, we don't make any calls like `json.partial! 
 We've now cut our template renders down to only 1 from the original 2,550. The only real disadvantage is it bucks the regular Rails file structure conventions for partials. C'est la vie.
 
 #### How?
-Each method you call on `jpartial`  defines a Jbuilder method of the same name. The objects you will pass to that method are yielded to the block. Inside the block you can use plain old Jbuilder syntax, and access any of the helper methods available to your views.
+Each method you call on `jpartial`  defines a Jbuilder method of the same name. The objects you will pass to that method are yielded to the block. Inside the block you can use plain old Jbuilder syntax, and access any of the helper methods available in your views.
 
 e.g.
 
